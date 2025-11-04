@@ -1,0 +1,26 @@
+.default-btn {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  height: 45px;
+  padding: 0 20px;
+  background-color: #c40f0f;
+  font-size: 1.2rem;
+  color: whitesmoke;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 50px 50px 0;
+
+  &:hover {
+    background-color: #e51a1a;
+  }
+
+  svg {
+    width: 1em;
+    height: 1em;
+    background-color: transparent;
+    fill: currentColor;
+  }
+}

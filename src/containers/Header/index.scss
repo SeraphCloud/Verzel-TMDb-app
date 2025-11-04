@@ -1,2 +1,30 @@
-.navbar {
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 20px 40px;
+  background-color: #141414;
+  box-shadow: 0 40px 12px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  box-sizing: border-box;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  .logo {
+    display: flex;
+    align-items: center;
+    color: #e51a1a;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+    margin: 0;
+    padding-left: 10px;
+  }
+
+  svg {
+    font-size: 1.8rem;
+  }
 }

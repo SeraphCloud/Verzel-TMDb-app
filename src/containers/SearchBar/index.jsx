@@ -2,7 +2,7 @@ import "./index.scss";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
 import { useState } from "react";
-import { FaSearch } from "react-icons/fa";
+import { BsSearch } from "react-icons/bs";
 
 const SearchBar = ({ onSearch }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,7 +25,7 @@ const SearchBar = ({ onSearch }) => {
         onKeyDown={handleKeyDown}
       />
       <Button onClick={handleSearch}>
-        <FaSearch />
+        <BsSearch />
       </Button>
     </div>
   );
