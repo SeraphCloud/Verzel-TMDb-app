@@ -1,0 +1,9 @@
+.searchbar-container {
+  display: flex;
+  justify-content: center;
+
+  .search {
+    flex-grow: 1;
+    max-width: 600px;
+  }
+}
