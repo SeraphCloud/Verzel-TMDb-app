@@ -3,7 +3,7 @@ import MovieCard from "../../components/MovieCard";
 import { ImSpinner3 } from "react-icons/im";
 import { MdError } from "react-icons/md";
 
-const MovieList = ({ movies, isLoading, error }) => {
+const MovieList = ({ movies, isLoading, error, onCardClick }) => {
   if (isLoading) {
     return (
       <div className="loading-container">
@@ -24,7 +24,7 @@ const MovieList = ({ movies, isLoading, error }) => {
   return (
     <div className="movie-list-container">
       {movies.map((movie) => (
-        <MovieCard key={movie.id} movie={movie} />
+        <MovieCard key={movie.id} movie={movie} onCardClick={onCardClick} />
       ))}
     </div>
   );

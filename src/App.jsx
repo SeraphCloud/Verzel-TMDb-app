@@ -3,11 +3,13 @@ import axios from "axios";
 import "./App.scss";
 import Header from "./containers/Header";
 import MovieList from "./containers/MovieList";
+import MovieModal from "./containers/MovieModal";
 
 function App() {
   const [movies, setMovies] = useState([]);
   const [loading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedMovie, setSelectedMovie] = useState(null);
 
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
   const baseUrl = "https://api.themoviedb.org/3/search/movie";
@@ -43,10 +45,28 @@ function App() {
     }
   };
 
+  const handleCardClick = (movie) => {
+    setSelectedMovie(movie);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedMovie(null);
+  };
+
   return (
     <div>
       <Header onSearch={handleSearch} />
-      <MovieList movies={movies} isLoading={loading} error={error} />
+
+      <MovieList
+        movies={movies}
+        isLoading={loading}
+        error={error}
+        onCardClick={handleCardClick}
+      />
+
+      {selectedMovie && (
+        <MovieModal movie={selectedMovie} onClose={handleCloseModal} />
+      )}
     </div>
   );
 }
