@@ -12,10 +12,16 @@
   top: 0;
   z-index: 1000;
 
+  .logo-nav {
+    display: flex;
+    align-items: center;
+  }
+
   .logo {
     display: flex;
     align-items: center;
     color: #e51a1a;
+    cursor: pointer;
   }
 
   h1 {
@@ -26,5 +32,30 @@
 
   svg {
     font-size: 1.8rem;
+  }
+
+  .navigation {
+    margin-left: 40px;
+  }
+
+  .nav-btn {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin: 0 10px;
+    cursor: pointer;
+    transition: color 0.2s;
+    padding: 10px 0;
+
+    &:hover {
+      color: #fff;
+    }
+
+    &:active {
+      color: #fff;
+      border-bottom: 3px solid #e51a1a;
+    }
   }
 }
