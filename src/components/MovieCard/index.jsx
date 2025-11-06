@@ -3,6 +3,7 @@ import { supabase } from "../../supabaseClient";
 import "./index.scss";
 import { FaImage, FaStar } from "react-icons/fa";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
+import { useAnonymousUser } from "../../hooks/useAnonymousUser";
 
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 
@@ -12,6 +13,8 @@ const MovieCard = ({
   isFavorited: initialIsFavorited = false,
   onUnfavorited,
 }) => {
+  const { userId } = useAnonymousUser();
+
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [isFavorited, setIsFavorited] = useState(initialIsFavorited);
 
@@ -24,17 +27,21 @@ const MovieCard = ({
   const handleFavoriteClick = async (e) => {
     e.stopPropagation();
     //
+    if (!userId) {
+      console.warn("User ID ainda não carregado.");
+      return;
+    }
+    //
     if (isFavorited) {
       try {
         const { error } = await supabase
           .from("favorite_movies")
           .delete()
-          .match({ tmdb_id: movie.id });
+          .match({ tmdb_id: movie.id, user_id: userId });
 
         if (error) throw error;
 
         setIsFavorited(false);
-        console.log("Removido os favoritos", movie.title);
         //
         if (onUnfavorited) {
           onUnfavorited(movie.id);
@@ -49,6 +56,7 @@ const MovieCard = ({
           tmdb_id: movie.id,
           title: movie.title,
           poster_path: movie.poster_path,
+          user_id: userId,
         };
         //
         const { error } = await supabase
@@ -58,7 +66,6 @@ const MovieCard = ({
         if (error) throw error;
         //
         setIsFavorited(true);
-        console.log("Adicionado aos favoritos:", movie.title);
       } catch (err) {
         if (err.code === "23505") {
           console.warn("Este filme já está nos favoritos (erro 23505).");
