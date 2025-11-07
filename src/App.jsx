@@ -1,3 +1,12 @@
+/**
+ * Componente principal da aplicação React Movie Database
+ *
+ * Gerencia o estado global da aplicação, incluindo:
+ * - Navegação entre visualizações (busca/favoritos)
+ * - Busca de filmes via API
+ * - Gerenciamento do modal de detalhes
+ * - Coordenação entre componentes filhos
+ */
 import { useState } from "react";
 import axios from "axios";
 import "./App.scss";
@@ -5,53 +14,70 @@ import Header from "./containers/Header";
 import MovieList from "./containers/MovieList";
 import MovieModal from "./containers/MovieModal";
 import FavoriteList from "./containers/FavoriteList";
+import { FaReact } from "react-icons/fa";
 
 function App() {
-  const [view, setView] = useState("search");
-  const [movies, setMovies] = useState([]);
-  const [loading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [selectedMovie, setSelectedMovie] = useState(null);
+  // Estados principais da aplicação
+  const [view, setView] = useState("search"); // Controla visualização atual: "search" ou "favorites"
+  const [movies, setMovies] = useState([]); // Lista de filmes retornados da busca
+  const [loading, setIsLoading] = useState(false); // Estado de carregamento durante busca
+  const [error, setError] = useState(null); // Mensagem de erro, se houver
+  const [selectedMovie, setSelectedMovie] = useState(null); // Filme selecionado para modal
+  const [hasSearched, setHasSearched] = useState(false); // Indica se já foi realizada uma busca
 
-  const baseUrl =
-    "https://tlywzgcwhnpvfzzkzxjn.supabase.co/functions/v1/search-movies";
+  // URL base da API de busca
+  const API_URL = import.meta.env.VITE_API_URL;
 
+  /**
+   * Realiza busca de filmes na API
+   * @param {string} searchTerm - Termo de busca fornecido pelo usuário
+   */
   const handleSearch = async (searchTerm) => {
+    // Ignora buscas vazias
     if (searchTerm.trim() === "") return;
 
+    // Marca que uma busca foi realizada para mostrar resultados
+    setHasSearched(true);
+
+    // Inicia estado de carregamento e limpa erros anteriores
     setIsLoading(true);
     setError(null);
 
     try {
-      const response = await axios.get(baseUrl, {
+      // Faz requisição para API de busca
+      const response = await axios.get(`${API_URL}/api/search`, {
         params: {
           query: searchTerm,
         },
-        headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-        },
       });
 
+      // Trata resposta da API
       if (response.data.length === 0) {
         setMovies([]);
         setError("Nenhum filme encontrado com esse termo.");
       } else {
         setMovies(response.data);
       }
-    } catch (err) {
-      console.error("Erro ao buscar filmes:", err);
+    } catch {
       setMovies([]);
-
       setError("Falha ao buscar filmes. Tente novamente mais tarde.");
     } finally {
+      // Sempre remove estado de carregamento
       setIsLoading(false);
     }
   };
 
+  /**
+   * Manipula clique em um cartão de filme
+   * @param {Object} movie - Dados do filme clicado
+   */
   const handleCardClick = (movie) => {
     setSelectedMovie(movie);
   };
 
+  /**
+   * Fecha o modal de detalhes do filme
+   */
   const handleCloseModal = () => {
     setSelectedMovie(null);
   };
@@ -61,12 +87,29 @@ function App() {
       <Header onSearch={handleSearch} setView={setView} currentView={view} />
 
       {view === "search" && (
-        <MovieList
-          movies={movies}
-          isLoading={loading}
-          error={error}
-          onCardClick={handleCardClick}
-        />
+        <>
+          {!hasSearched && (
+            <div className="empty-favorites-container">
+              <div className="welcome-animation">
+                <FaReact className="welcome-icon" />
+                <h2 className="welcome-text">React Movie Database</h2>
+              </div>
+              <p>
+                Use a barra de busca acima para encontrar e compartilhar seus
+                filmes favoritos
+              </p>
+            </div>
+          )}
+
+          {hasSearched && (
+            <MovieList
+              movies={movies}
+              isLoading={loading}
+              error={error}
+              onCardClick={handleCardClick}
+            />
+          )}
+        </>
       )}
 
       {view === "favorites" && <FavoriteList onCardClick={handleCardClick} />}

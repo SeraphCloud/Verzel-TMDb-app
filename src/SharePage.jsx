@@ -1,47 +1,69 @@
+/**
+ * Página SharePage - Exibe lista de favoritos compartilhada de outro usuário
+ *
+ * Funcionalidades principais:
+ * - Carrega lista de favoritos via parâmetro de URL (userId)
+ * - Exibe filmes em formato de grid (sem controles de favorito)
+ * - Tratamento de estados de carregamento e erro
+ * - Interface simplificada para visualização apenas
+ *
+ * Rota: /share/:userId
+ */
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { supabase } from "./supabaseClient";
+import axios from "axios";
 import { ImSpinner3 } from "react-icons/im";
 import "./containers/FavoriteList/index.scss";
 import Header from "./containers/Header";
 import MovieCard from "./components/MovieCard";
 
+// URL da API de favoritos
+const API_URL = "http://localhost:3001/api/favorites";
+
 const SharePage = () => {
+  // Extrai userId da URL (parâmetro de rota)
   const { userId } = useParams();
 
-  const [favorites, setFavorites] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // Estados do componente
+  const [favorites, setFavorites] = useState([]); // Lista de filmes favoritos compartilhados
+  const [isLoading, setIsLoading] = useState(true); // Estado de carregamento
+  const [error, setError] = useState(null); // Mensagem de erro, se houver
 
+  // Carrega lista de favoritos compartilhados quando componente monta ou userId muda
   useEffect(() => {
+    /**
+     * Busca lista de favoritos compartilhada de outro usuário
+     */
     const fetchSharedFavorites = async () => {
+      // Valida se há userId na URL
       if (!userId) {
         setError("ID de usuário inválido.");
         setIsLoading(false);
         return;
       }
 
+      // Inicia estados de carregamento
       setIsLoading(true);
       setError(null);
 
       try {
-        const { data, error } = await supabase
-          .from("favorite_movies")
-          .select("*")
-          .eq("user_id", userId);
-
-        if (error) throw error;
-        setFavorites(data);
-      } catch (err) {
-        console.error("Erro ao buscar lista compartilhada", err.message);
+        // Faz requisição GET para API de favoritos com userId da URL
+        const response = await axios.get(API_URL, {
+          params: {
+            userId: userId,
+          },
+        });
+        setFavorites(response.data);
+      } catch {
         setError("Não foi possível carregar esta lista");
       } finally {
+        // Sempre remove estado de carregamento
         setIsLoading(false);
       }
     };
 
     fetchSharedFavorites();
-  }, [userId]);
+  }, [userId]); // Executa quando userId muda
 
   if (isLoading) {
     return (
@@ -69,7 +91,7 @@ const SharePage = () => {
 
   return (
     <div>
-      <Header setView={() => {}} currentView="favorites" />
+      <Header setView={() => {}} currentView="favorites" showNav={false} />
 
       <div className="favorite-list-container">
         {favorites.map((movie) => (
@@ -77,10 +99,10 @@ const SharePage = () => {
             key={movie.id}
             isFavorited={true}
             movie={{
-              id: movie.tmdb_id,
+              id: movie.tmdbId,
               title: movie.title,
-              poster_path: movie.poster_path,
-              vote_average: 0,
+              poster_path: movie.posterPath,
+              vote_average: movie.voteAverage,
             }}
           />
         ))}

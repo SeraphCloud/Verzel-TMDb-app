@@ -8,7 +8,7 @@ const MovieModal = ({ movie, onClose }) => {
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation}>
-        <button className="close-btn" onClick={onclose}>
+        <button className="close-btn" onClick={onClose}>
           <IoCloseCircleOutline />
         </button>
 
@@ -18,7 +18,7 @@ const MovieModal = ({ movie, onClose }) => {
           <p className="overview">{movie.overview}</p>
           <div className="info">
             <span>
-              Nota: {movie.vote_average.toFixed(1)} <FaStar />
+              Nota: {(movie.vote_average || 0).toFixed(1)} <FaStar />
             </span>
             <span>Lançamento: {movie.release_date}</span>
           </div>
