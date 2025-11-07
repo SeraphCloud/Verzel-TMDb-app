@@ -22,7 +22,6 @@ import "./index.scss";
 import { FaImage, FaStar } from "react-icons/fa";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
 import { useAnonymousUser } from "../../hooks/useAnonymousUser";
-import useErrorHandler from "../../hooks/useErrorHandler";
 
 // URLs das APIs utilizadas
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500"; // Base para imagens da TMDB
@@ -36,9 +35,6 @@ const MovieCard = ({
 }) => {
   // Hook para obter ID do usuário anônimo (necessário para sistema de favoritos)
   const { userId } = useAnonymousUser();
-
-  // Hook para tratamento estruturado de erros
-  const { handleApiError } = useErrorHandler();
 
   // Estados locais do componente
   const [isImageLoaded, setIsImageLoaded] = useState(false); // Controla visibilidade da imagem após carregamento
@@ -85,12 +81,11 @@ const MovieCard = ({
           onUnfavorited(movie.id);
         }
       } catch (err) {
-        handleApiError(err, "remove_favorite", () => {
-          // Callback opcional para tratamento específico
-          console.warn(
-            "Falha ao remover favorito - operação será tentada novamente na próxima sincronização"
-          );
-        });
+        console.error("Erro ao remover favorito:", err);
+        // Callback opcional para tratamento específico
+        console.warn(
+          "Falha ao remover favorito - operação será tentada novamente na próxima sincronização"
+        );
       }
     }
     // Lógica para adicionar aos favoritos

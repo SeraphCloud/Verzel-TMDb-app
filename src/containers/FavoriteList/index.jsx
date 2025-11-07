@@ -15,7 +15,6 @@ import { ImSpinner3 } from "react-icons/im";
 import { useAnonymousUser } from "../../hooks/useAnonymousUser";
 import MovieCard from "../../components/MovieCard";
 import { FaShareAlt } from "react-icons/fa";
-import useErrorHandler from "../../hooks/useErrorHandler";
 
 // URL da API de favoritos
 const API_URL = "http://localhost:3001/api/favorites";
@@ -23,9 +22,6 @@ const API_URL = "http://localhost:3001/api/favorites";
 const FavoriteList = ({ onCardClick }) => {
   // Hook para obter ID do usuário (necessário para carregar favoritos específicos)
   const { userId } = useAnonymousUser();
-
-  // Hook para tratamento estruturado de erros
-  const { handleUIError } = useErrorHandler();
 
   // Estados do componente
   const [favorites, setFavorites] = useState([]); // Lista de filmes favoritos
@@ -98,10 +94,9 @@ const FavoriteList = ({ onCardClick }) => {
         setTimeout(() => setCopySuccess(""), 3000);
       })
       .catch((err) => {
-        handleUIError(err, "FavoriteList", "share_link", () => {
-          // Feedback visual para o usuário
-          setCopySuccess("Erro ao copiar link. Tente novamente.");
-        });
+        console.error("Erro ao copiar link:", err);
+        // Feedback visual para o usuário
+        setCopySuccess("Erro ao copiar link. Tente novamente.");
         // Mesmo em caso de erro, limpa feedback após 3 segundos
         setTimeout(() => setCopySuccess(""), 3000);
       });
