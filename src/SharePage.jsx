@@ -18,7 +18,7 @@ import Header from "./containers/Header";
 import MovieCard from "./components/MovieCard";
 
 // URL da API de favoritos
-const API_URL = "http://localhost:3001/api/favorites";
+const API_URL = `${import.meta.env.VITE_API_URL}/api/favorites`;
 
 const SharePage = () => {
   // Extrai userId da URL (parâmetro de rota)

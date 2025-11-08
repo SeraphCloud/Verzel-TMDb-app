@@ -17,7 +17,7 @@ import MovieCard from "../../components/MovieCard";
 import { FaShareAlt } from "react-icons/fa";
 
 // URL da API de favoritos
-const API_URL = "http://localhost:3001/api/favorites";
+const API_URL = `${import.meta.env.VITE_API_URL}/api/favorites`;
 
 const FavoriteList = ({ onCardClick }) => {
   // Hook para obter ID do usuário (necessário para carregar favoritos específicos)
